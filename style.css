@@ -1,0 +1,236 @@
+:root{
+  --bg-tint: rgba(0,0,0,0.45);
+  --accent: #00ff99;
+  --glass: rgba(255,255,255,0.04);
+  --card-padding: 2.25rem;
+  --shadow: 0 12px 30px rgba(0,0,0,0.45);
+  --interactive-shadow: 0 8px 20px rgba(0,0,0,0.6);
+  --glitch-color-1: rgba(255,0,128,0.8);
+  --glitch-color-2: rgba(0,255,200,0.8);
+}
+
+/* Full page reset */
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+html,body { height: 100%; font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; color: #e8eef6; background: #000; }
+
+/* Background image layer */
+.page-bg {
+  position: fixed;
+  inset: 0;
+  background-image: url('background2.png'); /* <-- your second image */
+  background-size: cover;
+  background-position: center;
+  filter: saturate(0.85) contrast(1.05) blur(0.6px);
+  z-index: 0;
+}
+
+/* dim overlay for readability */
+body::before{
+  content:"";
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.6));
+  z-index: 1;
+}
+
+/* Topbar */
+.topbar{
+  position: fixed;
+  z-index: 5;
+  left: 24px;
+  right: 24px;
+  top: 18px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  pointer-events: none;
+}
+.topbar .logo, .topbar .top-links a {
+  pointer-events: auto;
+}
+.topbar .logo {
+  font-weight:700;
+  letter-spacing:0.6px;
+  font-size:1rem;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+  color: #fff;
+  opacity: .95;
+  background: linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+  padding: 8px 12px;
+  border-radius: 12px;
+  backdrop-filter: blur(6px) saturate(120%);
+  box-shadow: var(--shadow);
+}
+
+/* Stage (center area) */
+.stage{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index: 3;
+  position: relative;
+  padding: 6rem 1rem;
+}
+
+/* Card */
+.center-card{
+  width: min(880px, 92vw);
+  text-align:center;
+  padding: var(--card-padding);
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: visible;
+  backdrop-filter: blur(6px) saturate(120%);
+}
+
+/* Glitchy main text */
+.glitch{
+  font-size: clamp(48px, 9vw, 96px);
+  line-height: 0.95;
+  font-weight: 900;
+  letter-spacing: -1px;
+  position: relative;
+  color: #fff;
+  margin-bottom: 12px;
+  display: inline-block;
+  transform: translateZ(0);
+}
+
+/* glitch layers using pseudo elements */
+.glitch::before,
+.glitch::after{
+  content: attr(data-text);
+  position:absolute;
+  left:0;
+  top:0;
+  width:100%;
+  height:100%;
+  clip-path: inset(0 0 0 0);
+  opacity: 0.85;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+.glitch::before{
+  content: "Fake Money";
+  color: var(--glitch-color-1);
+  transform: translate3d(-4px, -2px, 0);
+  animation: glitch-anim-1 2.6s infinite linear;
+  filter: blur(.4px);
+}
+.glitch::after{
+  content: "Fake Money";
+  color: var(--glitch-color-2);
+  transform: translate3d(4px, 2px, 0);
+  animation: glitch-anim-2 3.1s infinite linear;
+  filter: blur(.6px);
+}
+
+/* subtitle */
+.subtitle{
+  margin-top: .8rem;
+  color: rgba(230,240,255,0.85);
+  font-weight: 500;
+}
+
+/* Orbit and bills */
+.orbit{
+  position: absolute;
+  inset: 0;
+  display: block;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Each bill is absolutely placed and will orbit using rotate */
+.bill{
+  --size: 46px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--size);
+  height: calc(var(--size) * 0.56);
+  margin-left: calc(-1 * var(--size) / 2);
+  margin-top: calc(-1 * var(--size) / 2);
+  background-image: url('dollar.png'); /* <-- your 8-bit dollar bill */
+  background-size: contain;
+  background-repeat: no-repeat;
+  transform-origin: calc(-220px) center; /* distance from center; change to set orbit radius */
+  /* stagger each bill using custom property --i */
+  animation: orbit 8s linear infinite;
+  animation-delay: calc(var(--i) * -0.9s);
+  filter: drop-shadow(0 8px 20px rgba(0,0,0,0.55));
+  will-change: transform, opacity;
+}
+
+/* make bills rotate in slightly different orbits / sizes */
+.bill:nth-child(odd){ transform-origin: calc(-220px) center; width: 48px; height: 28px; }
+.bill:nth-child(even){ transform-origin: calc(-280px) center; width: 40px; height: 24px; }
+
+/* subtle floating tilt */
+.bill::after{
+  content:"";
+  position:absolute; inset:0;
+  transform-origin:center;
+}
+
+/* Hover effects for interactive elements */
+.interactive {
+  transition: transform 220ms cubic-bezier(.16,.8,.3,1), text-shadow 220ms, filter 220ms;
+  cursor: pointer;
+}
+.interactive:hover {
+  transform: translateY(-6px);
+  text-shadow: 0 8px 30px rgba(0,0,0,0.6);
+  filter: drop-shadow(0 18px 36px rgba(0,0,0,0.5)) saturate(1.05);
+}
+
+/* X logo at bottom-right */
+.x-link{
+  position: fixed;
+  right: 22px;
+  bottom: 18px;
+  z-index: 10;
+  display: inline-block;
+  width: 56px;
+  height: 56px;
+  padding: 8px;
+  background: var(--glass);
+  border-radius: 14px;
+  box-shadow: 0 10px 26px rgba(0,0,0,0.5);
+  backdrop-filter: blur(8px) saturate(120%);
+  transition: transform .22s ease, box-shadow .22s ease;
+}
+.x-link img{ width: 100%; height: 100%; object-fit: contain; display:block; }
+.x-link:hover{ transform: translateY(-6px) rotate(-6deg); box-shadow: 0 20px 40px rgba(0,0,0,0.6); filter: drop-shadow(0 16px 40px rgba(0,0,0,0.6)); }
+
+/* Responsive */
+@media (max-width:720px){
+  .center-card{ padding: 1.5rem; border-radius: 12px; }
+  .glitch{ font-size: clamp(36px, 11vw, 60px); }
+}
+
+/* Keyframes */
+@keyframes orbit {
+  0% { transform: rotate(0deg) translateX(0) rotate(0deg) translateX(220px); }
+  50% { transform: rotate(180deg) translateX(0) rotate(-180deg) translateX(220px); }
+  100% { transform: rotate(360deg) translateX(0) rotate(-360deg) translateX(220px); }
+}
+
+/* Glitch motion keyframes (pseudo-layers flicker) */
+@keyframes glitch-anim-1 {
+  0% { clip-path: inset(0 0 0 0); transform: translate3d(-4px,-2px,0) skewX(-2deg); opacity: .9; }
+  10% { clip-path: inset(10% 0 60% 0); transform: translate3d(-8px,-4px,0) skewX(-6deg); opacity: .65; }
+  20% { clip-path: inset(40% 0 20% 0); transform: translate3d(-2px,0,0) skewX(2deg); opacity: .9; }
+  30% { clip-path: inset(5% 0 80% 0); transform: translate3d(-6px,-1px,0) skewX(-4deg); opacity:.8; }
+  100% { clip-path: inset(0); transform: translate3d(-4px,-2px,0) skewX(-2deg); opacity:.9; }
+}
+@keyframes glitch-anim-2 {
+  0% { clip-path: inset(0 0 0 0); transform: translate3d(4px,2px,0) skewX(2deg); opacity: .9; }
+  10% { clip-path: inset(60% 0 10% 0); transform: translate3d(8px,6px,0) skewX(6deg); opacity: .6; }
+  20% { clip-path: inset(20% 0 40% 0); transform: translate3d(2px,0,0) skewX(-2deg); opacity: .95; }
+  30% { clip-path: inset(80% 0 5% 0); transform: translate3d(6px,1px,0) skewX(4deg); opacity:.8; }
+  100% { clip-path: inset(0); transform: translate3d(4px,2px,0) skewX(2deg); opacity:.9; }
+}

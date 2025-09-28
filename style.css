@@ -150,7 +150,7 @@ body::before{
   position: absolute;
   left: 50%;
   top: 50%;
-  width: var(--size);
+  width: var(10size);
   height: calc(var(--size) * 0.56);
   margin-left: calc(-1 * var(--size) / 2);
   margin-top: calc(-1 * var(--size) / 2);

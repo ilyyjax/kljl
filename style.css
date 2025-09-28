@@ -154,7 +154,7 @@ body::before{
   height: calc(var(--size) * 0.56);
   margin-left: calc(-1 * var(--size) / 2);
   margin-top: calc(-1 * var(--size) / 2);
-  background-image: url('dollar.png'); /* <-- your 8-bit dollar bill */
+  background-image: url('file:///C:/Users/jacks/OneDrive/Pictures/dollar.png'); /* <-- your 8-bit dollar bill */
   background-size: contain;
   background-repeat: no-repeat;
   transform-origin: calc(-220px) center; /* distance from center; change to set orbit radius */
